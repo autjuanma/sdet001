@@ -18,15 +18,4 @@ Java version: 11.0.18, vendor: Debian, runtime: /usr/lib/jvm/java-11-openjdk-amd
 Default locale: en_US, platform encoding: UTF-8
 OS name: "linux", version: "4.19.0-24-amd64", arch: "amd64", family: "unix"
 
-
-## How to run tests
-In terminal:
-```
-git clone https://github.com/touscorporategl/beta_x.git
-```
-mvn clean
-```
-To run the test
-```
-mvn test
-```
+![alt text](https://github.com/juansaint/Porunga_testNG/blob/master/somepictures/.indianTestNg.png)
