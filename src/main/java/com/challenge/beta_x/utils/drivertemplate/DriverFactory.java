@@ -17,54 +17,66 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class DriverFactory {
 
-	public static WebDriver getBrowser() {
+    /**
+     * Gets the WebDriver instance based on the specified browser type.
+     * 
+     * @return WebDriver instance.
+     */
+    public static WebDriver getBrowser() {
+        WebDriver driver = null;
+        String browserName = System.getProperty("browser", CHROME.toString()).toUpperCase();
+        DriverType driverType = DriverType.valueOf(browserName);
 
-		WebDriver midriver = null;
-//		String browserName = System.getProperty("browser", DriverType.FIREFOX.toString()).toUpperCase();
-		String browserName = System.getProperty("browser", CHROME.toString()).toUpperCase();
-		DriverType driverType = DriverType.valueOf(browserName);
+        // Set up the WebDriver based on the specified browser type
+        switch (driverType) {
+            case CHROME:
+                WebDriverManager.chromedriver().setup();
+                driver = new ChromeDriver(getChromeOptions());
+                break;
+            case FIREFOX:
+                WebDriverManager.firefoxdriver().setup();
+                driver = new FirefoxDriver();
+                break;
+            case EDGE:
+                WebDriverManager.edgedriver().setup();
+                driver = new EdgeDriver();
+                break;
+            case IE:
+                WebDriverManager.iedriver().setup();
+                driver = new InternetExplorerDriver();
+                break;
+            default:
+                WebDriverManager.chromedriver().setup();
+                driver = new ChromeDriver();
+                break;
+        }
 
-		switch (driverType) {
-		case CHROME:
-			WebDriverManager.chromedriver().setup();
-			midriver = new ChromeDriver(getChromeOptions());
-			break;
-		case FIREFOX:
-			WebDriverManager.firefoxdriver().setup();
-			midriver = new FirefoxDriver();
-			break;
-		case EDGE:
-			WebDriverManager.edgedriver().setup();
-			midriver = new EdgeDriver();
-			break;
-		case IE:
-			WebDriverManager.iedriver().setup();
-			midriver = new InternetExplorerDriver();
-			break;
-		default:
-			WebDriverManager.chromedriver().setup();
-			midriver = new ChromeDriver();
-			break;
-		}
-		midriver.manage().timeouts().implicitlyWait(Duration.ofMillis(3000));
-		return midriver;
-	}
+        // Configure implicit wait
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
+        return driver;
+    }
 
-	public static ChromeOptions getChromeOptions() {
-		ChromeOptions options = new ChromeOptions();
-		Map<String, Object> prefs = new HashMap<>();
-		prefs.put("profile.default_content_setting_values.notifications", 2);
-		prefs.put("credentials_enable_service", false);
-		prefs.put("profile.password_manager_enabled", false);
-		options.setExperimentalOption("prefs", prefs);
-		options.addArguments("--start-maximized");
-		options.addArguments("--disable-extensions");
-		options.addArguments("--disable-infobars");
-		options.addArguments("--disable-notifications");
-		options.addArguments("--remote-allow-origins=*");
-		options.addArguments("--remote-allow-origins=*");
+    /**
+     * Configures Chrome-specific options.
+     * 
+     * @return ChromeOptions instance with predefined settings.
+     */
+    private static ChromeOptions getChromeOptions() {
+        ChromeOptions options = new ChromeOptions();
+        Map<String, Object> prefs = new HashMap<>();
+        
+        // Disable notifications and password manager
+        prefs.put("profile.default_content_setting_values.notifications", 2);
+        prefs.put("credentials_enable_service", false);
+        prefs.put("profile.password_manager_enabled", false);
+        
+        options.setExperimentalOption("prefs", prefs);
+        options.addArguments("--start-maximized");
+        options.addArguments("--disable-extensions");
+        options.addArguments("--disable-infobars");
+        options.addArguments("--disable-notifications");
+        options.addArguments("--remote-allow-origins=*");
 
-		return options;
-	}
-
+        return options;
+    }
 }
